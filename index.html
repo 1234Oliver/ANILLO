@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Anillo Para Ti 💍</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: #0a0a1a;
+            position: relative;
+            height: 100vh;
+        }
+        
+        /* Fondo de galaxia con estrellas */
+        .galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a0833 0%, #0a0a1a 100%);
+            z-index: 1;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* Nebulosa de fondo */
+        .nebula {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: 2;
+        }
+        
+        .nebula1 {
+            top: -300px;
+            left: -300px;
+            background: radial-gradient(circle, #ff1493, #ff69b4, transparent);
+            animation: float 20s infinite alternate;
+        }
+        
+        .nebula2 {
+            bottom: -300px;
+            right: -300px;
+            background: radial-gradient(circle, #9d4edd, #da70d6, transparent);
+            animation: float 25s infinite alternate-reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+        
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        /* Botón inicial */
+        .initial-button {
+            background: linear-gradient(135deg, #ff1493, #9d4edd);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-family: 'Cormorant Garamond', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .initial-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .initial-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .initial-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.8);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 20, 147, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 20, 147, 0.8); }
+        }
+        
+        /* Contenedor 3D */
+        #canvas-container {
+            width: 100%;
+            height: 80vh;
+            position: relative;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+        
+        #canvas-container.show {
+            opacity: 1;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        /* Texto romántico */
+        .romantic-text {
+            opacity: 0;
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 100;
+            background: rgba(26, 8, 51, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .romantic-text.show {
+            animation: fadeInText 3s ease forwards;
+        }
+        
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .romantic-text h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd700, #ffb6c1, #ff69b4, #ffd700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .romantic-text p {
+            font-size: 1.4rem;
+            line-height: 2;
+            color: #f8f8ff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Partículas de corazones */
+        .heart {
+            position: fixed;
+            color: #ff69b4;
+            font-size: 20px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            animation: floatHeart 4s ease-in forwards;
+            filter: drop-shadow(0 0 5px #ff69b4);
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-300px) scale(0.5) rotate(360deg);
+            }
+        }
+        
+        /* Partículas brillantes */
+        .sparkle-particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+            box-shadow: 0 0 10px white;
+            animation: sparkleFloat 3s ease-out forwards;
+        }
+        
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .romantic-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .romantic-text p {
+                font-size: 1.1rem;
+            }
+            
+            .initial-button {
+                font-size: 1.1rem;
+                padding: 15px 30px;
+            }
+            
+            #canvas-container {
+                height: 65vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="galaxy-bg"></div>
+    <div class="nebula nebula1"></div>
+    <div class="nebula nebula2"></div>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <button class="initial-button" id="revealBtn">
+            <span style="position: relative; z-index: 1;">Toca para recibir tu anillo ❤️</span>
+        </button>
+        
+        <div id="canvas-container" class="hidden"></div>
+        
+        <div class="romantic-text hidden" id="romanticText">
+            <h1>Mi Amor Eterno</h1>
+            <p>
+                Hoy te entrego mi corazón y este anillo, símbolo de nuestro amor eterno. 
+                Aunque la distancia nos separe, mi alma siempre está contigo. 
+                Cada estrella en esta galaxia representa un momento que quiero vivir a tu lado. 
+                ¿Quieres ser mía para siempre? 💍✨
+            </p>
+        </div>
+    </div>
+    
+    <!-- Audio de fondo -->
+<audio id="backgroundMusic" loop>
+  <source src="Diego Luna - Te Amo Y Más (Letra).mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+  let scene, camera, renderer, ring, manHand, womanHand, ringLight;
+  let animationStarted = false;
+  let particles = [];
+
+  // Crear estrellas del fondo
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 300; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      starsContainer.appendChild(star);
+  }
+
+  // --- 🔊 Manejo del audio ---
+  const music = document.getElementById("backgroundMusic");
+
+  // Intentar reproducir al interactuar
+  function enableMusicPlayback() {
+      music.play()
+          .then(() => {
+              console.log("🎶 Música iniciada con éxito");
+          })
+          .catch(err => {
+              console.warn("⚠️ El navegador bloqueó el autoplay. Se iniciará tras interacción:", err);
+          });
+  }
+
+  // Reproducir al primer clic o toque
+  function startMusicOnce() {
+      enableMusicPlayback();
+      document.removeEventListener("click", startMusicOnce);
+      document.removeEventListener("touchstart", startMusicOnce);
+  }
+
+  document.addEventListener("click", startMusicOnce);
+  document.addEventListener("touchstart", startMusicOnce);
+        
+        // Inicializar Three.js con renderizado avanzado
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+            
+            // Escena
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x0a0a1a, 10, 50);
+            
+            // Cámara
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 2, 12);
+            camera.lookAt(0, 0, 0);
+            
+            // Renderer con sombras y antialias
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x000000, 0);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+            
+            // Sistema de iluminación avanzado
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+            scene.add(ambientLight);
+            
+            // Luz principal
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            mainLight.position.set(5, 10, 5);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 2048;
+            mainLight.shadow.mapSize.height = 2048;
+            scene.add(mainLight);
+            
+            // Luces de color para ambiente romántico
+            const pinkLight = new THREE.PointLight(0xff69b4, 1, 50);
+            pinkLight.position.set(-5, 5, 5);
+            scene.add(pinkLight);
+            
+            const purpleLight = new THREE.PointLight(0x9d4edd, 0.8, 50);
+            purpleLight.position.set(5, 3, -5);
+            scene.add(purpleLight);
+            
+            // Luz focal para el anillo
+            ringLight = new THREE.SpotLight(0xffd700, 2, 20, Math.PI / 6, 0.5, 2);
+            ringLight.position.set(0, 8, 5);
+            ringLight.castShadow = true;
+            scene.add(ringLight);
+            
+            // Crear anillo 3D ultra realista
+            createRealisticRing();
+            
+            // Crear manos realistas
+            createRealisticHands();
+            
+            // Crear partículas 3D
+            createParticles();
+            
+            // Resize
+            window.addEventListener('resize', onWindowResize, false);
+        }
+        
+        function createRealisticRing() {
+            const ringGroup = new THREE.Group();
+            
+            // Banda del anillo con detalles
+            const bandGeometry = new THREE.TorusGeometry(0.8, 0.12, 32, 100);
+            const bandMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                metalness: 1,
+                roughness: 0.2,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.3,
+                envMapIntensity: 1
+            });
+            const band = new THREE.Mesh(bandGeometry, bandMaterial);
+            band.rotation.x = Math.PI / 2;
+            band.castShadow = true;
+            band.receiveShadow = true;
+            ringGroup.add(band);
+            
+            // Detalles grabados en la banda
+            const detailGeometry = new THREE.TorusGeometry(0.81, 0.02, 16, 100);
+            const detailMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffed4e,
+                metalness: 1,
+                roughness: 0.1
+            });
+            const detail1 = new THREE.Mesh(detailGeometry, detailMaterial);
+            detail1.rotation.x = Math.PI / 2;
+            detail1.position.y = 0.05;
+            ringGroup.add(detail1);
+            
+            const detail2 = detail1.clone();
+            detail2.position.y = -0.05;
+            ringGroup.add(detail2);
+            
+            // Base del diamante (engaste)
+            const settingGeometry = new THREE.CylinderGeometry(0.25, 0.3, 0.3, 8);
+            const settingMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                metalness: 1,
+                roughness: 0.2
+            });
+            const setting = new THREE.Mesh(settingGeometry, settingMaterial);
+            setting.position.y = 0.35;
+            setting.castShadow = true;
+            ringGroup.add(setting);
+            
+            // Diamante principal con facetas realistas
+            const diamondGeometry = new THREE.OctahedronGeometry(0.4, 1);
+            const diamondMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0,
+                roughness: 0,
+                transparent: true,
+                opacity: 0.98,
+                reflectivity: 1,
+                clearcoat: 1,
+                clearcoatRoughness: 0,
+                ior: 2.417, // Índice de refracción del diamante
+                thickness: 0.5,
+                transmission: 0.9,
+                emissive: 0xccddff,
+                emissiveIntensity: 0.4
+            });
+            const diamond = new THREE.Mesh(diamondGeometry, diamondMaterial);
+            diamond.position.y = 0.7;
+            diamond.scale.set(1, 1.3, 1);
+            diamond.castShadow = true;
+            ringGroup.add(diamond);
+            
+            // Pequeños diamantes laterales
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI * 2) / 6;
+                const smallDiamond = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.08),
+                    diamondMaterial
+                );
+                smallDiamond.position.set(
+                    Math.cos(angle) * 0.65,
+                    0.1,
+                    Math.sin(angle) * 0.65
+                );
+                smallDiamond.scale.set(1, 1.2, 1);
+                ringGroup.add(smallDiamond);
+            }
+            
+            // Luz puntual en el diamante
+            const diamondLight = new THREE.PointLight(0xffffff, 1.5, 5);
+            diamondLight.position.copy(diamond.position);
+            ringGroup.add(diamondLight);
+            
+            ringGroup.position.set(0, 0, 0);
+            ringGroup.scale.set(1.2, 1.2, 1.2);
+            scene.add(ringGroup);
+            ring = ringGroup;
+        }
+        
+        function createRealisticHands() {
+            // Mano del hombre (más grande y robusta)
+            const manHandGroup = new THREE.Group();
+            
+            // Material de piel del hombre
+            const manSkinMaterial = new THREE.MeshStandardMaterial({
+                color: 0xd4a574,
+                roughness: 0.8,
+                metalness: 0
+            });
+            
+            // Palma
+            const palmGeometry = new THREE.BoxGeometry(2, 0.5, 2.5);
+            const palm = new THREE.Mesh(palmGeometry, manSkinMaterial);
+            palm.castShadow = true;
+            manHandGroup.add(palm);
+            
+            // Muñeca
+            const wristGeometry = new THREE.CylinderGeometry(0.6, 0.7, 1.5, 16);
+            const wrist = new THREE.Mesh(wristGeometry, manSkinMaterial);
+            wrist.rotation.z = Math.PI / 2;
+            wrist.position.set(0, 0, -1.8);
+            wrist.castShadow = true;
+            manHandGroup.add(wrist);
+            
+            // Dedos con articulaciones
+            const fingerPositions = [
+                { x: -0.6, z: 1.5, rotation: 0 },
+                { x: -0.2, z: 1.6, rotation: 0 },
+                { x: 0.2, z: 1.6, rotation: 0 },
+                { x: 0.6, z: 1.5, rotation: 0 }
+            ];
+            
+            fingerPositions.forEach((pos, index) => {
+                // Falange 1
+                const finger1Geo = new THREE.CylinderGeometry(0.15, 0.18, 0.8, 12);
+                const finger1 = new THREE.Mesh(finger1Geo, manSkinMaterial);
+                finger1.rotation.x = Math.PI / 2;
+                finger1.position.set(pos.x, 0, pos.z + 0.4);
+                finger1.castShadow = true;
+                manHandGroup.add(finger1);
+                
+                // Falange 2
+                const finger2 = finger1.clone();
+                finger2.position.z = pos.z + 0.9;
+                finger2.scale.set(0.95, 0.95, 0.95);
+                manHandGroup.add(finger2);
+                
+                // Falange 3
+                const finger3Geo = new THREE.CylinderGeometry(0.1, 0.15, 0.6, 12);
+                const finger3 = new THREE.Mesh(finger3Geo, manSkinMaterial);
+                finger3.rotation.x = Math.PI / 2;
+                finger3.position.set(pos.x, 0, pos.z + 1.3);
+                finger3.castShadow = true;
+                manHandGroup.add(finger3);
+            });
+            
+            // Pulgar
+            const thumbGeo = new THREE.CylinderGeometry(0.18, 0.2, 1, 12);
+            const thumb = new THREE.Mesh(thumbGeo, manSkinMaterial);
+            thumb.rotation.set(0, 0, Math.PI / 3);
+            thumb.position.set(1.2, 0, 0.3);
+            thumb.castShadow = true;
+            manHandGroup.add(thumb);
+            
+            manHandGroup.position.set(-15, -3, 0);
+            manHandGroup.rotation.set(0.2, 0, Math.PI / 8);
+            scene.add(manHandGroup);
+            manHand = manHandGroup;
+            
+            // Mano de la mujer (más delicada y pequeña)
+            const womanHandGroup = new THREE.Group();
+            
+            // Material de piel de la mujer
+            const womanSkinMaterial = new THREE.MeshStandardMaterial({
+                color: 0xf4d4b8,
+                roughness: 0.7,
+                metalness: 0
+            });
+            
+            // Palma más pequeña
+            const womanPalmGeometry = new THREE.BoxGeometry(1.6, 0.4, 2);
+            const womanPalm = new THREE.Mesh(womanPalmGeometry, womanSkinMaterial);
+            womanPalm.castShadow = true;
+            womanHandGroup.add(womanPalm);
+            
+            // Muñeca
+            const womanWristGeometry = new THREE.CylinderGeometry(0.45, 0.5, 1.2, 16);
+            const womanWrist = new THREE.Mesh(womanWristGeometry, womanSkinMaterial);
+            womanWrist.rotation.z = Math.PI / 2;
+            womanWrist.position.set(0, 0, -1.4);
+            womanWrist.castShadow = true;
+            womanHandGroup.add(womanWrist);
+            
+            // Dedos más delgados y delicados
+            const womanFingerPositions = [
+                { x: -0.5, z: 1.3, rotation: 0 },
+                { x: -0.17, z: 1.4, rotation: 0 },
+                { x: 0.17, z: 1.4, rotation: 0 },
+                { x: 0.5, z: 1.3, rotation: 0 }
+            ];
+            
+            womanFingerPositions.forEach((pos, index) => {
+                // Falange 1
+                const finger1Geo = new THREE.CylinderGeometry(0.12, 0.14, 0.7, 12);
+                const finger1 = new THREE.Mesh(finger1Geo, womanSkinMaterial);
+                finger1.rotation.x = Math.PI / 2;
+                finger1.position.set(pos.x, 0, pos.z + 0.35);
+                finger1.castShadow = true;
+                womanHandGroup.add(finger1);
+                
+                // Falange 2
+                const finger2 = finger1.clone();
+                finger2.position.z = pos.z + 0.75;
+                finger2.scale.set(0.95, 0.95, 0.95);
+                womanHandGroup.add(finger2);
+                
+                // Falange 3
+                const finger3Geo = new THREE.CylinderGeometry(0.08, 0.12, 0.5, 12);
+                const finger3 = new THREE.Mesh(finger3Geo, womanSkinMaterial);
+                finger3.rotation.x = Math.PI / 2;
+                finger3.position.set(pos.x, 0, pos.z + 1.1);
+                finger3.castShadow = true;
+                womanHandGroup.add(finger3);
+            });
+            
+            // Pulgar
+            const womanThumbGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.8, 12);
+            const womanThumb = new THREE.Mesh(womanThumbGeo, womanSkinMaterial);
+            womanThumb.rotation.set(0, 0, Math.PI / 3);
+            womanThumb.position.set(1, 0, 0.2);
+            womanThumb.castShadow = true;
+            womanHandGroup.add(womanThumb);
+            
+            // Uñas pintadas
+            womanFingerPositions.forEach((pos, index) => {
+                const nailGeo = new THREE.SphereGeometry(0.1, 8, 8);
+                const nailMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xff69b4,
+                    metalness: 0.8,
+                    roughness: 0.2
+                });
+                const nail = new THREE.Mesh(nailGeo, nailMaterial);
+                nail.position.set(pos.x, 0.05, pos.z + 1.35);
+                nail.scale.set(1, 0.5, 0.8);
+                womanHandGroup.add(nail);
+            });
+            
+            womanHandGroup.position.set(15, -3, 0);
+            womanHandGroup.rotation.set(0.2, 0, -Math.PI / 8);
+            scene.add(womanHandGroup);
+            womanHand = womanHandGroup;
+        }
+        
+        function createParticles() {
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = 1000;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 50;
+                positions[i + 1] = (Math.random() - 0.5) * 50;
+                positions[i + 2] = (Math.random() - 0.5) * 50;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particleSystem);
+            particles.push(particleSystem);
+        }
+        
+        function animateRingPlacement() {
+            if (!animationStarted) {
+                animationStarted = true;
+                
+                const duration = 6000; // 6 segundos
+                const startTime = Date.now();
+                
+                // Posiciones iniciales y finales
+                const manStartX = -15;
+                const manEndX = -1.5;
+                const womanStartX = 15;
+                const womanEndX = 1.5;
+                
+                function updateAnimation() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Ease in-out suave
+                    const easeProgress = progress < 0.5 
+                        ? 4 * progress * progress * progress
+                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                    
+                    // Mover manos
+                    manHand.position.x = manStartX + (manEndX - manStartX) * easeProgress;
+                    womanHand.position.x = womanStartX + (womanEndX - womanStartX) * easeProgress;
+                    
+                    // Rotar manos gradualmente
+                    manHand.rotation.z = Math.PI / 8 - (Math.PI / 8) * easeProgress;
+                    womanHand.rotation.z = -Math.PI / 8 + (Math.PI / 8) * easeProgress;
+                    
+                    // Mover anillo con la mano del hombre
+                    if (progress < 1) {
+                        requestAnimationFrame(updateAnimation);
+                    } else {
+                        // Animación completada
+                        ring.position.set(womanHand.position.x - 0.17, womanHand.position.y + 0.5, 0);
+                        ring.scale.set(0.7, 0.7, 0.7);
+                        startRingRotation();
+                        
+                        // Explosión de partículas brillantes
+                        for (let i = 0; i < 50; i++) {
+                            setTimeout(() => {
+                                createSparkleParticle(ring.position.x, ring.position.y, ring.position.z);
+                            }, i * 30);
+                        }
+                        
+                        // Mostrar texto
+                        setTimeout(() => {
+                            document.getElementById('romanticText').classList.remove('hidden');
+                            document.getElementById('romanticText').classList.add('show');
+                            setInterval(createHeart, 600);
+                        }, 1000);
+                    }
+                }
+                
+                updateAnimation();
+            }
+        }
+        
+        function startRingRotation() {
+            let time = 0;
+            function rotateRing() {
+                time += 0.01;
+                ring.rotation.y += 0.01;
+                ring.children[3].rotation.y += 0.02; // Rotar diamante principal
+                
+                // Pulsación de luz
+                if (ringLight) {
+                    ringLight.intensity = 2 + Math.sin(time * 2) * 0.5;
+                }
+                
+                // Animar partículas de fondo
+                particles.forEach(p => {
+                    p.rotation.y += 0.0005;
+                    p.rotation.x += 0.0003;
+                });
+                
+                renderer.render(scene, camera);
+                requestAnimationFrame(rotateRing);
+            }
+            rotateRing();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (!animationStarted) {
+                ring.rotation.y += 0.005;
+                if (ring.children[3]) {
+                    ring.children[3].rotation.y += 0.01;
+                }
+                
+                // Animar partículas
+                particles.forEach(p => {
+                    p.rotation.y += 0.0005;
+                });
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+        
+        // Crear corazones flotantes
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = '100%';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+        
+        // Crear partículas brillantes
+        function createSparkleParticle(x, y, z) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle-particle';
+            
+            // Posición en pantalla (proyección 3D a 2D)
+            const vector = new THREE.Vector3(x, y, z);
+            vector.project(camera);
+            
+            const screenX = (vector.x * 0.5 + 0.5) * window.innerWidth;
+            const screenY = (-vector.y * 0.5 + 0.5) * window.innerHeight;
+            
+            sparkle.style.left = screenX + 'px';
+            sparkle.style.top = screenY + 'px';
+            
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = (Math.random() - 0.5) * 200;
+            sparkle.style.setProperty('--tx', tx + 'px');
+            sparkle.style.setProperty('--ty', ty + 'px');
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 3000);
+        }
+        
+        // Botón de revelación
+        const revealBtn = document.getElementById('revealBtn');
+        const canvasContainer = document.getElementById('canvas-container');
+        
+        revealBtn.addEventListener('click', () => {
+            // Efecto de ondas al hacer clic
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const ripple = document.createElement('div');
+                    ripple.style.position = 'fixed';
+                    ripple.style.left = '50%';
+                    ripple.style.top = '50%';
+                    ripple.style.width = '10px';
+                    ripple.style.height = '10px';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.border = '2px solid #ff69b4';
+                    ripple.style.transform = 'translate(-50%, -50%)';
+                    ripple.style.animation = 'rippleEffect 1s ease-out forwards';
+                    ripple.style.pointerEvents = 'none';
+                    ripple.style.zIndex = '1000';
+                    document.body.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 1000);
+                }, i * 150);
+            }
+            
+            revealBtn.style.opacity = '0';
+            revealBtn.style.transform = 'scale(0)';
+            
+            setTimeout(() => {
+                revealBtn.classList.add('hidden');
+                canvasContainer.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    canvasContainer.classList.add('show');
+                    initThree();
+                    animate();
+                    
+                    setTimeout(() => {
+                        animateRingPlacement();
+                    }, 1500);
+                }, 100);
+            }, 300);
+        });
+        
+        // Agregar animación de ripple
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleEffect {
+                0% {
+                    width: 10px;
+                    height: 10px;
+                    opacity: 1;
+                }
+                100% {
+                    width: 300px;
+                    height: 300px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>0.65) {
+                        ring.position.x = manHand.position.x + 2;
+                        ring.position.y = manHand.position.y + 1.5;
+                        ring.position.z = manHand.position.z;
+                    } else {
+                        // Colocar anillo en el dedo de la mujer
+                        const placeProgress = (progress - 0.65) / 0.35;
+                        const easePlace = placeProgress * placeProgress * (3 - 2 * placeProgress);
+                        
+                        const startX = manHand.position.x + 2;
+                        const endX = womanHand.position.x - 0.17;
+                        const startY = manHand.position.y + 1.5;
+                        const endY = womanHand.position.y + 0.5;
+                        
+                        ring.position.x = startX + (endX - startX) * easePlace;
+                        ring.position.y = startY + (endY - startY) * easePlace;
+                        ring.scale.setScalar(1.2 - 0.5 * easePlace);
+                        
+                        // Crear partículas brillantes cuando se coloca
+                        if (placeProgress > 0.5 && Math.random() > 0.7) {
+                            createSparkleParticle(ring.position.x, ring.position.y, ring.position.z);
+                        }
+                    }
+                    
+                    if (progress <
